@@ -1,5 +1,11 @@
 import socket
 import time
+import keyboard
+
+def get_key():
+    event = keyboard.read_event()
+    return event.name
+
 
 
 def clinet_init(host_address, host_port):
@@ -29,10 +35,16 @@ def send(mySocket, text, delay):
         mySocket.close()
         exit()
 
-try:
-    mySocket = clinet_init('192.168.137.247',2222)
-    while True:
-        text = input("请输入要发送的内容：")
-        send(mySocket, text, 0.05)
-except KeyboardInterrupt:
-    pass
+if __name__ == '__main__':
+    ip = ''
+    port = 2222
+    mySocket = clinet_init(ip, port)
+
+    try:
+        while True:
+            text = getKey()
+            send(mySocket, text, 0.05)
+            time.sleep(0.05)
+    except KeyboardInterrupt:
+        send(mySocket, 'over', 0.05)
+        pass
