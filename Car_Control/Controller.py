@@ -16,7 +16,8 @@ def clinet_init(host_address, host_port):
     port = host_port
 
     try:
-        mySocket.connect((host, port)) ##连接到服务器
+        mySocket.connect((host, port))
+        print("连接成功") ##连接到服务器
     except :                           ##连接不成功，运行最初的ip
         print ('连接不成功')
     
@@ -36,15 +37,15 @@ def send(mySocket, text, delay):
         exit()
 
 if __name__ == '__main__':
-    ip = ''
+    ip = '192.168.137.247'
     port = 2222
     mySocket = clinet_init(ip, port)
 
     try:
         while True:
-            text = getKey()
-            send(mySocket, text, 0.05)
+            text = get_key()
+            send(mySocket, text, 0.01)
             time.sleep(0.05)
     except KeyboardInterrupt:
-        send(mySocket, 'over', 0.05)
+        send(mySocket, 'over', 0.01)
         pass

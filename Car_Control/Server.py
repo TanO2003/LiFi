@@ -13,27 +13,25 @@ def server_init(host_address, host_port):
     mySocket.bind((host, port))
     mySocket.listen(10)
 
-    return mySocket
+    return mySocket.accept()[0]
 
 
-def receive(mySocket, delay):
+def receive(client, delay):
+
+    #print("新连接")
+    #print("IP is %s" % address[0])
+    #print("port is %d\n" % address[1])
     while True:
-        # 接收客户端连接
-        client = mySocket.accept()
-        #print("新连接")
-        #print("IP is %s" % address[0])
-        #print("port is %d\n" % address[1])
-        while True:
-            # 读取消息, 把接收到的数据进行解码
-            msg = client.recv(1024).decode("utf-8")
-            
-            time.sleep(delay)
+        # 读取消息, 把接收到的数据进行解码
+        msg = client.recv(1024).decode("utf-8")
+        
+        time.sleep(delay)
 
-            
-            
-            if msg == "over":
-                client.close()
-                mySocket.close()
-                print("程序结束\n")
-                exit()
-            return msg
+        
+        
+        if msg == "over":
+            client.close()
+            #mySocket.close()
+            print("程序结束\n")
+            exit()
+        return msg
