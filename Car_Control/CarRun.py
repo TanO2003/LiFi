@@ -10,6 +10,7 @@ IN4 = 26
 ENA = 16
 ENB = 13
 
+global info
 #设置GPIO口为BCM编码方式
 GPIO.setmode(GPIO.BCM)
 
@@ -39,6 +40,7 @@ def run(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.HIGH)
     GPIO.output(IN4, GPIO.LOW)
+    info = "run"
     pwm_ENA.ChangeDutyCycle(80)
     pwm_ENB.ChangeDutyCycle(80)
     time.sleep(delaytime)
@@ -49,6 +51,7 @@ def back(delaytime):
     GPIO.output(IN2, GPIO.HIGH)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.HIGH)
+    info = "back"
     pwm_ENA.ChangeDutyCycle(80)
     pwm_ENB.ChangeDutyCycle(80)
     time.sleep(delaytime)
@@ -59,6 +62,7 @@ def left(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.HIGH)
     GPIO.output(IN4, GPIO.LOW)
+    info = "left"
     pwm_ENA.ChangeDutyCycle(80)
     pwm_ENB.ChangeDutyCycle(80)
     time.sleep(delaytime)
@@ -69,6 +73,7 @@ def right(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
+    info = "right"
     pwm_ENA.ChangeDutyCycle(80)
     pwm_ENB.ChangeDutyCycle(80)
     time.sleep(delaytime)
@@ -99,6 +104,7 @@ def brake(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
+    info = "stop"
     pwm_ENA.ChangeDutyCycle(80)
     pwm_ENB.ChangeDutyCycle(80)
     time.sleep(delaytime)
@@ -110,6 +116,12 @@ def destroy():
     pwm_ENA.stop()
     pwm_ENB.stop()
     GPIO.cleanup() 
+
+#获取行驶信息
+def get_info():
+    return info
+
+
 
 '''
 #延时2s	
