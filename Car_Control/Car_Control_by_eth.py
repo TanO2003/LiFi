@@ -3,7 +3,8 @@ import Server
 import RPi.GPIO as GPIO
 from time import sleep
 from threading import Thread
-#import Sender_number_only
+import Client
+
 
 
 R = 22
@@ -13,7 +14,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(R, GPIO.OUT)
 GPIO.setup(G, GPIO.OUT)
 GPIO.setup(B, GPIO.OUT)
-move_num = 0
+move_num = ''
 
 
 def car_control(ip, port, delay):
@@ -24,42 +25,34 @@ def car_control(ip, port, delay):
             move = Server.receive(client, delay)
             global move_num
             if move == 'w':
-                
-                move_num = 0
-                GPIO.output(R, GPIO.HIGH)
-                GPIO.output(G, GPIO.HIGH)
-                GPIO.output(B, GPIO.HIGH)
-                sleep(0.3)
                 CarRun.run(0.5)
+                move_num = 'run'
             elif move == 's':
                 CarRun.back(0.5)
-                move_num = 1
+                move_num = 'back'
             elif move == 'a':
                 CarRun.left(0.5)
-                move_num = 2
+                move_num = 'left'
             elif move == 'd':
                 CarRun.right(0.5)
-                move_num = 3
+                move_num = 'right'
             elif move == 'space':
-                
-                move_num = 4
-                GPIO.output(R, GPIO.LOW)
-                GPIO.output(G, GPIO.LOW)
-                GPIO.output(B, GPIO.LOW)
-                sleep(0.3)
                 CarRun.brake(0.5)
+                move_num = 'stop'
             
     except KeyboardInterrupt:
         pass
     CarRun.destroy()
 
 
-def sent_info():
+def sent_info(ip, port, delay):
     try:
+        mySocket = Client.clinet_init(ip, port)
         while True:
-            info = CarRun.get_info() 
-            sleep(1)
-            return info
+            #info = CarRun.get_info()
+            global move_num
+            info = move_num
+            Client.send(mySocket, info, delay)
     except KeyboardInterrupt:
         pass
 
@@ -67,5 +60,13 @@ if __name__ == '__main__':
     ip = '192.168.137.30'
     port = 2222
     delay = 0.01
-    car_control(ip, port, delay)
-
+    ip_2 = '169.254.87.109'
+    port_2 = 2000
+    delay_2 = 0.05
+    #car_control(ip, port, delay)
+    t1 = Thread(target = car_control, args=(ip, port, delay))
+    t2 = Thread(target = sent_info, args=(ip_2, port_2, delay_2))
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()

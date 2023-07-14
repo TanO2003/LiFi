@@ -45,8 +45,8 @@ def run(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.HIGH)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(80)
-    pwm_ENB.ChangeDutyCycle(80)
+    pwm_ENA.ChangeDutyCycle(20)
+    pwm_ENB.ChangeDutyCycle(20)
     time.sleep(delaytime)
 
 #小车后退
@@ -55,8 +55,8 @@ def back(delaytime):
     GPIO.output(IN2, GPIO.HIGH)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.HIGH)
-    pwm_ENA.ChangeDutyCycle(80)
-    pwm_ENB.ChangeDutyCycle(80)
+    pwm_ENA.ChangeDutyCycle(20)
+    pwm_ENB.ChangeDutyCycle(20)
     time.sleep(delaytime)
 
 #小车左转	
@@ -65,8 +65,8 @@ def left(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.HIGH)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(80)
-    pwm_ENB.ChangeDutyCycle(80)
+    pwm_ENA.ChangeDutyCycle(20)
+    pwm_ENB.ChangeDutyCycle(20)
     time.sleep(delaytime)
 
 #小车右转
@@ -75,8 +75,8 @@ def right(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(80)
-    pwm_ENB.ChangeDutyCycle(80)
+    pwm_ENA.ChangeDutyCycle(20)
+    pwm_ENB.ChangeDutyCycle(20)
     time.sleep(delaytime)
 
 #小车原地左转
@@ -85,8 +85,8 @@ def spin_left(delaytime):
     GPIO.output(IN2, GPIO.HIGH)
     GPIO.output(IN3, GPIO.HIGH)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(80)
-    pwm_ENB.ChangeDutyCycle(80)
+    pwm_ENA.ChangeDutyCycle(20)
+    pwm_ENB.ChangeDutyCycle(20)
     time.sleep(delaytime)
 
 #小车原地右转
@@ -95,8 +95,8 @@ def spin_right(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.HIGH)
-    pwm_ENA.ChangeDutyCycle(80)
-    pwm_ENB.ChangeDutyCycle(80)
+    pwm_ENA.ChangeDutyCycle(20)
+    pwm_ENB.ChangeDutyCycle(20)
     time.sleep(delaytime)
 
 #小车停止	
@@ -105,9 +105,15 @@ def brake(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(80)
-    pwm_ENB.ChangeDutyCycle(80)
+    pwm_ENA.ChangeDutyCycle(20)
+    pwm_ENB.ChangeDutyCycle(20)
     time.sleep(delaytime)
+
+def destroy():
+    #停止pwm
+    pwm_ENA.stop()
+    pwm_ENB.stop()
+    GPIO.cleanup() 
 
 
 '''
