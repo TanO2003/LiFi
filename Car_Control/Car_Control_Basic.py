@@ -3,6 +3,14 @@ import Server
 import RPi.GPIO as GPIO
 #import Sender_number_only
 
+
+R = 22
+G = 27
+B = 24
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(R, GPIO.OUT)
+GPIO.setup(G, GPIO.OUT)
+GPIO.setup(B, GPIO.OUT)
 def car_control(ip, port, delay):
     try:
         CarRun.motor_init()
@@ -13,7 +21,9 @@ def car_control(ip, port, delay):
             if move == 'w':
                 CarRun.back(0.5)
                 move_num = 0
-                GPIO.output(22, GPIO.HIGH)
+                GPIO.output(R, GPIO.HIGH)
+                GPIO.output(G, GPIO.HIGH)
+                GPIO.output(B, GPIO.HIGH)
             elif move == 's':
                 CarRun.run(0.5)
                 move_num = 1
@@ -26,7 +36,9 @@ def car_control(ip, port, delay):
             elif move == 'space':
                 CarRun.brake(0.5)
                 move_num = 4
-                GPIO.output(22, GPIO.LOW)
+                GPIO.output(R, GPIO.LOW)
+                GPIO.output(G, GPIO.LOW)
+                GPIO.output(B, GPIO.LOW)
             
     except KeyboardInterrupt:
         pass
@@ -37,7 +49,7 @@ def car_control(ip, port, delay):
 
 
 if __name__ == '__main__':
-    ip = ''
+    ip = '192.168.137.83'
     port = 2222
     delay = 0.01
     GPIO.setmode(GPIO.BCM)
