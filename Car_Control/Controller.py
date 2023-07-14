@@ -37,7 +37,7 @@ def send(mySocket, text, delay):
         exit()
 
 if __name__ == '__main__':
-    ip = '192.168.137.83'
+    ip = '192.168.137.30'
     port = 2222
     mySocket = clinet_init(ip, port)
 

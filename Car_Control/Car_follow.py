@@ -9,6 +9,9 @@ import CarRun
 #光敏电阻引脚定义
 LdrSensorLeft = 7
 LdrSensorRight = 6
+Ldr = LdrSensorRight
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(Ldr, GPIO.IN)
 
 def bin_2_str(bin):
     # 二进制转换为字符串
@@ -27,17 +30,13 @@ def bin_2_str(bin):
     #return ''.join([chr(i) for i in [int(b, 2) for b in bin.split('')]])
 
 
-GPIO.setmode(GPIO.BCM)
-
-GPIO.setup(12, GPIO.IN)
-
 def receiver(delay):
     # 接收
     while True:
         a = ''
         i = 0
         while i < 2:
-            a += str(GPIO.input(LdrSensorLeft))
+            a += str(GPIO.input(Ldr))
             sleep(delay)
             if a[-4:] == "1010":
                 i += 1
@@ -69,8 +68,7 @@ try:
             CarRun.brake(0.5)
         '''
 
-        if GPIO.input(12) == 1:
-            sleep(0.5)
+        if GPIO.input(Ldr) == 0:
             CarRun.run(0.5)
         else:
             CarRun.brake(0.5)
