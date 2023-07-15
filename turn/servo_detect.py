@@ -41,11 +41,8 @@ def servo_pulse(myangle):
 
 
 
-
-
 try:
     while True:
-        global angle_0
         servo_detect()
         print("detect!")
         sleep(0.5)

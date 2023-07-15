@@ -28,8 +28,10 @@ try:
         elif move == 'back':
             CarRun.back(0.5)
         elif move == 'left':
+            CarRun.run(0.4)
             CarRun.left(0.5)
         elif move == 'right':
+            CarRun.run(0.4)
             CarRun.right(0.5)
         elif move == 'stop':
             CarRun.brake(0.5)
