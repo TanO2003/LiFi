@@ -34,10 +34,12 @@ print(deco)
 text = 'abc'
 
 byte_string = RSCodec(10).encode(text.encode('utf-8'))
-binary_string = ' '.join([bin(b)[2:].zfill(8) for b in byte_string])
+binary_string = ''.join([bin(b)[2:].zfill(8) for b in byte_string])
 print(binary_string)
 
-byte_string = bytes([int(b, 2) for b in binary_string.split()])
+
+binary_list = [binary_string[i:i+8] for i in range(0, len(binary_string), 8)]
+byte_string = bytes([int(b, 2) for b in binary_list])
 print(byte_string)
 print(RSCodec(10).decode(byte_string)[0].decode('utf-8'))
-#Bingo007
+
