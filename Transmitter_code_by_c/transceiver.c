@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <string.h>
-#include <wiringPi.h>
+//#include <wiringPi.h>
 #include <stdbool.h> 
 #include <stdlib.h>
 #include <math.h>
@@ -559,10 +559,10 @@ int main()
 {
     struct timeval tval_before, tval_after, tval_result;
     gettimeofday(&tval_before, NULL);
-    wiringPiSetup () ;
-	pinMode (0, INPUT) ;
-    pinMode (1, OUTPUT) ;
-    pinMode (2,OUTPUT);
+    //wiringPiSetup () ;
+	//pinMode (0, INPUT) ;
+    //pinMode (1, OUTPUT) ;
+    //pinMode (2,OUTPUT);
     
     char mode;
     bool modeReceiver=false;
@@ -570,19 +570,19 @@ int main()
     
     while(1)
     {
-        digitalWrite (2, HIGH);
+        //digitalWrite (2, HIGH);
         printf("Press the R button for Receiver Mode or any other key for Sender Mode\n");
         scanf(" %c",&mode);
         
         if (mode=='R'||mode=='r')
         {
-            digitalWrite(2,LOW);
+            //digitalWrite(2,LOW);
             modeReceiver=true;
         }
         
         if (mode!='R'&&mode!='r')
         {
-            digitalWrite(2,LOW);
+            //digitalWrite(2,LOW);
             modeReceiver=false;
             
             char dataName[NAME_MAX];
