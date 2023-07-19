@@ -25,13 +25,13 @@ static long file_size = 0;
 #define cPackSize 8
 #define tPackSize 8
 
-#define overhead 64 //Overhead without synchro = crcSize+nameSize+extensionSize+cPackSize+tPackSize; 
+#define overhead 24 //Overhead without synchro = crcSize+nameSize+extensionSize+cPackSize+tPackSize; 
 
 int dataFrame[frameSize+overhead+preambleSize]={1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1};
 int dataResult[frameSize+overhead-crcSize]={0};
 
 
-char result[preambleSize+overhead+frameSize]={'1','0','1','0','1','0','1','0','1','0','1','1','1','1','1','1','1','1','1','1'};
+//char result[preambleSize+overhead+frameSize]={'1','0','1','0','1','0','1','0','1','0','1','1','1','1','1','1','1','1','1','1'};
 
 
 //different global variables
@@ -56,6 +56,7 @@ class Sender
     public:
     string message;
     string message_byte;
+    char result[preambleSize+overhead+frameSize]={'1','0','1','0','1','0','1','0','1','0','1','1','1','1','1','1','1','1','1','1'};
 
 
 
@@ -88,21 +89,54 @@ class Sender
 
         //convert total number of packages to binary here
         bitset<8> b(packages);
-
-        for (int j=0; j<packages;j++)
+        for (int j=0; j<cPackSize;j++)
         {
-            //Add current and total packages Number
-            for (int i=0;i<cPackSize;i++)
-            {
-                packagesBinary[i]=b[i];
-            }
+            packagesBinary[i]=b[i];
         }
         
-        for (int i=0;i<packages;i++)
+        for (int j=0;j<packages;j++)
         {
+            // Add current package number to the frame
+            for (int i=0; i<cPackSize;i++)
+            {
+                result[preambleSize+i]=((j+1) & (int)1<<(8-i-1)) ? '1' : '0';
+                result[preambleSize+cPackSize+i]=packagesBinary[i];
+            }
+
+            int rest=(int) length % frameSize; 
             
+            if(j!=packages-1||rest==0)
+            {
+                //Add the file content
+                for(int k=frameSize*j;k<frameSize*(j+1);k++)
+                {
+                    result[preambleSize+overhead-crcSize+k-(frameSize*j)]=message_byte[k];
+                }
+            }
+
+
+            if (j==packages-1&&rest!=0)
+            {
+                for(int k=frameSize*j;k<(frameSize*j)+rest;k++)
+                {
+                    if(content[k]==1)
+                    {
+                        result[preambleSize+overhead-crcSize+k-(frameSize*j)]='1';
+                    }
+                    else if(content[k]==0)
+                    {
+                        result[preambleSize+overhead-crcSize+k-(frameSize*j)]='0';
+                    }            
+                }
+                for(int k=rest;k<frameSize;k++)
+                {
+                    result[preambleSize+overhead-crcSize+k]='0';
+                }
+                
+            }
         }
+
+
     }
 
-
-}
+};
