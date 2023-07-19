@@ -6,12 +6,13 @@ using namespace std;
 
 int main()
 {
-    int pin_out = 3;
+    int pin_in = 12;
     string message;
-    Receiver receiver(pin_out);
+    Receiver receiver(pin_in);
     while (true)
     {
-        message = receiver.receive();
-        cout << message << endl;
+        receiver.ReceiveMessage();
+        if (receiver.message != ""){
+        cout << receiver.message << endl;}
     }
 }

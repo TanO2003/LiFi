@@ -175,19 +175,15 @@ class Sender
 
         //convert total number of packages to binary here
         bitset<8> b(packages);
-        char packagesBinary[8];
-        for (int j=0; j<cPackSize;j++)
-        {
-            packagesBinary[i]=b[i];
-        }
-        
+
+
         for (int j=0;j<packages;j++)
         {
             // Add current package number to the frame
             for (int i=0; i<cPackSize;i++)
             {
                 result[preambleSize+i]=((j+1) & (int)1<<(8-i-1)) ? '1' : '0';
-                result[preambleSize+cPackSize+i]=packagesBinary[i];
+                result[preambleSize+cPackSize+i]=b[i];
             }
 
             int rest=(int) length % frameSize; 
@@ -486,3 +482,32 @@ class Receiver
     }
 
 };
+
+
+int main()
+{
+    string message;
+    int pin_in = 12;
+    Sender sender(pin_in);
+    while(1)
+    {
+        cout << "Enter message: "<<endl;
+        cin >> message;
+        sender.SendMessage(message);
+    }
+    return 0;
+}
+/*
+int main()
+{
+    int pin_out = 3;
+    string message;
+    Receiver receiver(pin_out);
+    while (true)
+    {
+        receiver.ReceiveMessage();
+        if (receiver.message != ""){
+        cout << receiver.message << endl;}
+    }
+}
+*/

@@ -1,3 +1,6 @@
+#include <string>
+#include <bitset>
+#include <iostream>
 #include <stdio.h>
 #include <sys/time.h>
 #include <string.h>
@@ -5,9 +8,7 @@
 #include <stdbool.h> 
 #include <stdlib.h>
 #include <math.h>
-#include <string>
-#include <bitset>
-#include <iostream>
+
 
 #define NAME_MAX 1024
 #define FILESIZE_MAX (2560)
@@ -26,10 +27,10 @@ class Sender
 {
     private:
 
-    string message_byte;
+    std::string message_byte;
     char result[preambleSize+overhead+frameSize]={'1','0','1','0','1','0','1','0','1','0','1','1','1','1','1','1','1','1','1','1'};
 
-    void GetMessage(string message);
+    void GetMessage(std::string message);
     void ConvertToByte();
     void CalculateCRC();
     void TransferData();
@@ -37,11 +38,11 @@ class Sender
 
     public:
 
-    string message;
+    std::string message;
     int pin;
 
-    void Sender(int pin);
-    void SendMessage(string text);
+    Sender(int pin);
+    void SendMessage(std::string text);
 
 };
 
@@ -66,10 +67,10 @@ class Receiver
     void ReceiveData();
 
     public:
-    string message;
+    std::string message;
     int pin;
 
-    void Receiver(int pin);
+    Receiver(int pin);
     void ReceiveMessage();
 
 };

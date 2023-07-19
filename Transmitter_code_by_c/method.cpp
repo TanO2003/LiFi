@@ -1,4 +1,5 @@
 #include "transceiver.h"
+#include <wiringPi.h>
 
 using namespace std;
 
@@ -95,7 +96,7 @@ void Sender::TransferData()
             }
             
         else if(result[pos]=='0'){
-            digitalWrite(pin,  LOW) ;
+            digitalWrite(pin, LOW) ;
             pos++;
             }
     }
@@ -111,17 +112,14 @@ void Sender::BuildDataFrame()
     if ((int)length%frameSize==0)
     {
         packages=(int)length/frameSize;
-    }else:
+    }else
     {
         packages=(int)length/frameSize+1;
     }
 
     //convert total number of packages to binary here
     bitset<8> b(packages);
-    for (int j=0; j<cPackSize;j++)
-    {
-        packagesBinary[i]=b[i];
-    }
+
     
     for (int j=0;j<packages;j++)
     {
@@ -129,7 +127,7 @@ void Sender::BuildDataFrame()
         for (int i=0; i<cPackSize;i++)
         {
             result[preambleSize+i]=((j+1) & (int)1<<(8-i-1)) ? '1' : '0';
-            result[preambleSize+cPackSize+i]=packagesBinary[i];
+            result[preambleSize+cPackSize+i]=b[i];
         }
 
         int rest=(int) length % frameSize; 
@@ -186,7 +184,7 @@ void Sender::SendMessage(string text)
 
 
 
-void Receiver::LookForSynchro();
+void Receiver::LookForSynchro()
 {
     bool same=true;
     int preamble[preambleSize]={1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1}; 
@@ -215,117 +213,117 @@ void Receiver::LookForSynchro();
 
 void Receiver::BitsToArray()
 { 
-for (int i=0;i<frameSize+overhead;i++)
-{dataResult[i]=dataFrame[i+preambleSize];}
+    for (int i=0;i<frameSize+overhead;i++)
+    {dataResult[i]=dataFrame[i+preambleSize];}
 
-//Converting the Header Bits here
-int currentPackage=0;
-int totalPackages=0;
-for(int i = 0; i < (overhead/8)-1; i++) // -1 because last Byte is for CRC and has no message data
-{
-    int pl[8];
-    for(int l = i*8; l < 8*(i+1); l++){ 
-        pl[l-(i*8)]= dataResult[l];
-    }
-        
-    int n = 0;
-    for(int j = 0; j < 8; j++)
+    //Converting the Header Bits here
+    int currentPackage=0;
+    int totalPackages=0;
+    for(int i = 0; i < (overhead/8)-1; i++) // -1 because last Byte is for CRC and has no message data
     {
-        int x = pl[j];
-        for(int k = 0; k < 7-j; k++)  x *= 2;
-        n += x;
+        int pl[8];
+        for(int l = i*8; l < 8*(i+1); l++){ 
+            pl[l-(i*8)]= dataResult[l];
+        }
+            
+        int n = 0;
+        for(int j = 0; j < 8; j++)
+        {
+            int x = pl[j];
+            for(int k = 0; k < 7-j; k++)  x *= 2;
+            n += x;
+        }
+        if(i==0)
+        {
+            currentPackage =n;
+        }
+        if(i==1)
+        {
+            totalPackages =n;
+        }
     }
-    if(i==0)
+        for(int i=0;i<frameSize;i++)
+        {
+            file_content[i+((currentPackage-1)*frameSize)]=dataResult[i+overhead-crcSize];
+        }
+
+    if (currentPackage==totalPackages)
     {
-        currentPackage =n;
-    }
-    if(i==1)
-    {
-        totalPackages =n;
-    }
-}
-    for(int i=0;i<frameSize;i++)
-    {
-        file_content[i+((currentPackage-1)*frameSize)]=dataResult[i+overhead-crcSize];
+        int zeroCounter=0;
+        for(int i=totalPackages*frameSize; i>=0;i--)
+        {
+        if (file_content[i]==0)
+        {
+            zeroCounter++;
+        }
+        else{break;}
+        }
+        zeroCounter=zeroCounter/8; //for Bytes
+        //printf("ZeroCounter: %d\n",zeroCounter);
+        for(int i=0;i<(totalPackages*frameSize)-zeroCounter;i++)
+        {
+            message+=file_content[i];
+        }
     }
 
-if (currentPackage==totalPackages)
-{
-    int zeroCounter=0;
-    for(int i=totalPackages*frameSize; i>=0;i--)
-    {
-    if (file_content[i]==0)
-    {
-        zeroCounter++;
-    }
-    else{break;}
-    }
-    zeroCounter=zeroCounter/8; //for Bytes
-    //printf("ZeroCounter: %d\n",zeroCounter);
-    for(int i=0;i<(totalPackages*frameSize)-zeroCounter;i++)
-    {
-        message+=file_content[i];
-    }
-}
 
-
-receiveData_Done=true; 
+    receiveData_Done=true; 
 }
 
 
 void Receiver::CheckCRC()
 {
     
-int polynom[9]={1,0,0,1,0,1,1,1,1};
-int p=9; //int p=strlen(polynom); // lenght of polynom (normaly fix, but it is better to use a variable if I want to change the polynom later
-int k= frameSize+preambleSize+overhead;  
-int frame[frameSize+preambleSize+overhead+crcSize]; //add crcSize again for calculation buffer space
-    
-//fill the buffer array
-for(int i=0;i<frameSize+preambleSize+overhead+crcSize;i++){
-    if (i<k)
-    {
-    frame[i]=dataFrame[i];}
-    else
-    {frame[i]=0;}
-}
-
-//make the division
-int i=0;
-while (  i <  k  ){                     
-    for( int j=0 ; j < p ; j++){
-            if( frame[i+j] == polynom[j] )  {
-                frame[i+j]=0;
-            }
-            else{
-                frame[i+j]=1;
-            }     
+    int polynom[9]={1,0,0,1,0,1,1,1,1};
+    int p=9; //int p=strlen(polynom); // lenght of polynom (normaly fix, but it is better to use a variable if I want to change the polynom later
+    int k= frameSize+preambleSize+overhead;  
+    int frame[frameSize+preambleSize+overhead+crcSize]; //add crcSize again for calculation buffer space
+        
+    //fill the buffer array
+    for(int i=0;i<frameSize+preambleSize+overhead+crcSize;i++){
+        if (i<k)
+        {
+        frame[i]=dataFrame[i];}
+        else
+        {frame[i]=0;}
     }
-    while( i< frameSize+preambleSize+overhead+crcSize && frame[i] != 1)
-            i++; 
-}
 
-bool CRC_Done_false=false;  
-for(int j=k; j-k<p-1;j++)
-{
-    //erst am Ende des Frames die CRC Sequenz deswegen j=k
-    if (frame[j]==1){
-    CRC_Done_false=true;
-    }     
-}  
+    //make the division
+    int i=0;
+    while (  i <  k  ){                     
+        for( int j=0 ; j < p ; j++){
+                if( frame[i+j] == polynom[j] )  {
+                    frame[i+j]=0;
+                }
+                else{
+                    frame[i+j]=1;
+                }     
+        }
+        while( i< frameSize+preambleSize+overhead+crcSize && frame[i] != 1)
+                i++; 
+    }
 
-if(CRC_Done_false==false)
-{
-    
-    //printf("Nachricht fehlerfrei empfangen!\n");
-    BitsToArray();
-}
+    bool CRC_Done_false=false;  
+    for(int j=k; j-k<p-1;j++)
+    {
+        //erst am Ende des Frames die CRC Sequenz deswegen j=k
+        if (frame[j]==1){
+        CRC_Done_false=true;
+        }     
+    }  
 
-if(CRC_Done_false==true)
-{
-    receiveData_Done=true; 
-    printf("Nachricht war fehlerhaft und wurde verworfen!\n");
-}
+    if(CRC_Done_false==false)
+    {
+        
+        //printf("Nachricht fehlerfrei empfangen!\n");
+        BitsToArray();
+    }
+
+    if(CRC_Done_false==true)
+    {
+        receiveData_Done=true; 
+        printf("Nachricht war fehlerhaft und wurde verworfen!\n");
+    }
 
 }
 

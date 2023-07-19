@@ -7,8 +7,8 @@ using namespace std;
 int main()
 {
     string message;
-    int pin_in = 12;
-    Sender sender(pin_in);
+    int pin_out = 3;
+    Sender sender(pin_out);
     while(1)
     {
         cout << "Enter message: "<<endl;
