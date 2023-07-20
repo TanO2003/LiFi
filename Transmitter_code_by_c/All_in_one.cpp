@@ -168,7 +168,7 @@ class Sender
         if ((int)length%frameSize==0)
         {
             packages=(int)length/frameSize;
-        }else:
+        }else                                                                                                                                                    
         {
             packages=(int)length/frameSize+1;
         }
@@ -183,7 +183,7 @@ class Sender
             for (int i=0; i<cPackSize;i++)
             {
                 result[preambleSize+i]=((j+1) & (int)1<<(8-i-1)) ? '1' : '0';
-                result[preambleSize+cPackSize+i]=b[i];
+                result[preambleSize+cPackSize+i]=b.to_string()[i];
             }
 
             int rest=(int) length % frameSize; 
@@ -227,7 +227,7 @@ class Sender
 
 
 
-    void Sender(int pin)
+    Sender(int pin)
     {
         this->pin=pin;
         wiringPiSetup();
@@ -420,7 +420,7 @@ class Receiver
     string message;
     int pin;
 
-    void Receiver(int pin)
+    Receiver(int pin)
     {
         this->pin=pin;
         wiringPiSetup();
@@ -483,11 +483,11 @@ class Receiver
 
 };
 
-
+/*
 int main()
 {
     string message;
-    int pin_in = 12;
+    int pin_in = 3;
     Sender sender(pin_in);
     while(1)
     {
@@ -497,10 +497,10 @@ int main()
     }
     return 0;
 }
-/*
+*/
 int main()
 {
-    int pin_out = 3;
+    int pin_out = 22;
     string message;
     Receiver receiver(pin_out);
     while (true)
@@ -510,4 +510,3 @@ int main()
         cout << receiver.message << endl;}
     }
 }
-*/

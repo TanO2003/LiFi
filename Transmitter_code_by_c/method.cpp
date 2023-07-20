@@ -99,7 +99,9 @@ void Sender::TransferData()
             digitalWrite(pin, LOW) ;
             pos++;
             }
+        
     }
+    digitalWrite(pin, LOW);
 
 }
 
@@ -127,7 +129,7 @@ void Sender::BuildDataFrame()
         for (int i=0; i<cPackSize;i++)
         {
             result[preambleSize+i]=((j+1) & (int)1<<(8-i-1)) ? '1' : '0';
-            result[preambleSize+cPackSize+i]=b[i];
+            result[preambleSize+cPackSize+i]=b.to_string()[i];
         }
 
         int rest=(int) length % frameSize; 
@@ -342,9 +344,9 @@ void Receiver::ReceiveData()
 }
 
 
-Receiver::Receiver(int pin)
+Receiver::Receiver(int pin_in)
 {
-    this->pin=pin;
+    this->pin=pin_in;
     wiringPiSetup();
     pinMode(pin,INPUT);
 }

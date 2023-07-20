@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-    int pin_in = 12;
+    int pin_in = 22;
     string message;
     Receiver receiver(pin_in);
     while (true)
@@ -15,4 +15,5 @@ int main()
         if (receiver.message != ""){
         cout << receiver.message << endl;}
     }
+    return 0;
 }
