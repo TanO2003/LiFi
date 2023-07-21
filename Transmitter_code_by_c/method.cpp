@@ -94,7 +94,7 @@ void Sender::TransferData()
             digitalWrite(pin, HIGH);
             pos++;
             }
-            
+        
         else if(result[pos]=='0'){
             digitalWrite(pin, LOW) ;
             pos++;

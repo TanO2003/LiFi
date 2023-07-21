@@ -50,19 +50,21 @@ def car_control(ip, port, delay):
 def sent_info(ip, port, delay):
     try:
         mySocket = Client.clinet_init(ip, port)
+        i = 0
         while True:
             #info = CarRun.get_info()
             global move_num
             info = move_num
             Client.send(mySocket, info, delay)
+            sleep(0.5)
     except KeyboardInterrupt:
         pass
 
 if __name__ == '__main__':
-    ip = '192.168.137.30'
+    ip = '192.168.137.6'
     port = 2222
     delay = 0.01
-    ip_2 = '169.254.87.109'
+    ip_2 = '169.254.35.79'
     port_2 = 2000
     delay_2 = 0.05
     #car_control(ip, port, delay)

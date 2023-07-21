@@ -37,7 +37,7 @@ def send(mySocket, text, delay):
         exit()
 
 if __name__ == '__main__':
-    ip = '192.168.137.30'
+    ip = '192.168.137.6'
     port = 2222
     mySocket = clinet_init(ip, port)
 
@@ -45,7 +45,6 @@ if __name__ == '__main__':
         while True:
             text = get_key()
             send(mySocket, text, 0.01)
-            time.sleep(0.05)
     except KeyboardInterrupt:
         send(mySocket, 'over', 0.01)
         pass

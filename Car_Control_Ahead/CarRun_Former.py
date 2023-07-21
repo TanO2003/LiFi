@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 import time
 
 #小车电机引脚定义
-IN1 = speed
+IN1 = 20
 IN2 = 21
 IN3 = 19
 IN4 = 26
@@ -29,8 +29,8 @@ def motor_init():
     GPIO.setup(IN3,GPIO.OUT,initial=GPIO.LOW)
     GPIO.setup(IN4,GPIO.OUT,initial=GPIO.LOW)
     #设置pwm引脚和频率为speed00hz
-    pwm_ENA = GPIO.PWM(ENA, speed00)
-    pwm_ENB = GPIO.PWM(ENB, speed00)
+    pwm_ENA = GPIO.PWM(ENA, 2000)
+    pwm_ENB = GPIO.PWM(ENB, 2000)
     pwm_ENA.start(0)
     pwm_ENB.start(0)
     info = ''

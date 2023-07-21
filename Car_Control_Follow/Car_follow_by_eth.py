@@ -12,7 +12,7 @@ LdrSensorRight = 6
 Ldr = LdrSensorRight
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(Ldr, GPIO.IN)
-ip = '169.254.87.109'
+ip = '169.254.35.79'
 port = 2000
 delay = 0.01
         
