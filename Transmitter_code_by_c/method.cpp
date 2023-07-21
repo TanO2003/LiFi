@@ -193,7 +193,7 @@ void Receiver::LookForSynchro()
     for (int i = 0; i < preambleSize-1; i++) {
         sequenze[i]=sequenze[i+1];
     }
-        sequenze[preambleSize-1]=data;
+    sequenze[preambleSize-1]=data;
 
     for(int i=0;i<preambleSize;i++){
         if(sequenze[i]!=preamble[i])
@@ -354,53 +354,54 @@ Receiver::Receiver(int pin_in)
 
 void Receiver::ReceiveMessage()
 {
-    gettimeofday(&tval_after, NULL);
-    timersub(&tval_after, &tval_before, &tval_result);
-    double time_elapsed = (double)tval_result.tv_sec + ((double)tval_result.tv_usec/1000000.0f);
-
-
-    while(time_elapsed < 0.001)
-    {
+    while (1){
         gettimeofday(&tval_after, NULL);
         timersub(&tval_after, &tval_before, &tval_result);
-        time_elapsed = (double)tval_result.tv_sec + ((double)tval_result.tv_usec/1000000.0f);
-    }
-    gettimeofday(&tval_before, NULL);
-
-    data = digitalRead(pin);
+        double time_elapsed = (double)tval_result.tv_sec + ((double)tval_result.tv_usec/1000000.0f);
 
 
-    switch (state)
-    {
-        case 0:
-            //looking for preamble pattern
-            synchro_Done=false;
-            LookForSynchro();
-            
-            if (synchro_Done==true)
-            {
-                state=1;
-            }
-            break;
-            
-        case 1:
-            //receive the actual data
-            receiveData_Done=false;
-            senderState=false;
-            ReceiveData();
-            
-            if(receiveData_Done&&senderState==false)
-            {
-                state=0;
-            }
-            if(senderState==true)
-            {
+        while(time_elapsed < 0.001)
+        {
+            gettimeofday(&tval_after, NULL);
+            timersub(&tval_after, &tval_before, &tval_result);
+            time_elapsed = (double)tval_result.tv_sec + ((double)tval_result.tv_usec/1000000.0f);
+        }
+        gettimeofday(&tval_before, NULL);
+
+        data = digitalRead(pin);
+
+
+        switch (state)
+        {
+            case 0:
+                //looking for preamble pattern
+                synchro_Done=false;
+                LookForSynchro();
+                
+                if (synchro_Done==true)
+                {
+                    state=1;
+                }
+                break;
+                
+            case 1:
+                //receive the actual data
+                receiveData_Done=false;
                 senderState=false;
-                state=0;
-            }
-            break;
-            
+                ReceiveData();
+                
+                if(receiveData_Done&&senderState==false)
+                {
+                    state=0;
+                }
+                if(senderState==true)
+                {
+                    senderState=false;
+                    state=0;
+                }
+                break;
+                
+        }
     }
-
 
 }

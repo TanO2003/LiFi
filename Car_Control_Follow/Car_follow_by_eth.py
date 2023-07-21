@@ -24,17 +24,19 @@ try:
         #print(move)
         global move_num
         if move == 'run':
-            CarRun.run(0.5)
+            CarRun.run(0.5,20)
         elif move == 'back':
-            CarRun.back(0.5)
+            CarRun.back(0.5,20)
         elif move == 'left':
-            CarRun.run(0.4)
-            CarRun.left(0.5)
+            CarRun.run(0.3,10)
+            CarRun.left(0.5,30)
+            CarRun.run(0.5,20)
         elif move == 'right':
-            CarRun.run(0.4)
-            CarRun.right(0.5)
+            CarRun.run(0.3,10)
+            CarRun.right(0.5,30)
+            CarRun.run(0.5,20)
         elif move == 'stop':
-            CarRun.brake(0.5)
+            CarRun.brake(0.5,20)
             
 except KeyboardInterrupt:
     pass

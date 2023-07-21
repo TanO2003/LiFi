@@ -40,74 +40,84 @@ def motor_init():
     pwm_ENB.start(0)
 
 #小车前进	
-def run(delaytime):
-    GPIO.output(IN1, GPIO.HIGH)
-    GPIO.output(IN2, GPIO.LOW)
-    GPIO.output(IN3, GPIO.HIGH)
-    GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(20)
-    pwm_ENB.ChangeDutyCycle(20)
+def run(delaytime,speed):
+    GPIO.output(IN1, GPIO.LOW)
+    GPIO.output(IN2, GPIO.HIGH)
+    GPIO.output(IN3, GPIO.LOW)
+    GPIO.output(IN4, GPIO.HIGH)
+    global info
+    info = "run"
+    pwm_ENA.ChangeDutyCycle(speed)
+    pwm_ENB.ChangeDutyCycle(speed)
     time.sleep(delaytime)
 
 #小车后退
-def back(delaytime):
-    GPIO.output(IN1, GPIO.LOW)
-    GPIO.output(IN2, GPIO.HIGH)
-    GPIO.output(IN3, GPIO.LOW)
-    GPIO.output(IN4, GPIO.HIGH)
-    pwm_ENA.ChangeDutyCycle(20)
-    pwm_ENB.ChangeDutyCycle(20)
+def back(delaytime,speed):
+    GPIO.output(IN1, GPIO.HIGH)
+    GPIO.output(IN2, GPIO.LOW)
+    GPIO.output(IN3, GPIO.HIGH)
+    GPIO.output(IN4, GPIO.LOW)
+    global info
+    info = "back"
+    pwm_ENA.ChangeDutyCycle(speed)
+    pwm_ENB.ChangeDutyCycle(speed)
     time.sleep(delaytime)
 
 #小车左转	
-def left(delaytime):
+def left(delaytime,speed):
     GPIO.output(IN1, GPIO.LOW)
-    GPIO.output(IN2, GPIO.LOW)
-    GPIO.output(IN3, GPIO.HIGH)
+    GPIO.output(IN2, GPIO.HIGH)
+    GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(20)
-    pwm_ENB.ChangeDutyCycle(20)
+    global info
+    info = "left"
+    pwm_ENA.ChangeDutyCycle(speed)
+    pwm_ENB.ChangeDutyCycle(speed)
     time.sleep(delaytime)
 
 #小车右转
-def right(delaytime):
-    GPIO.output(IN1, GPIO.HIGH)
+def right(delaytime,speed):
+    GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
-    GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(20)
-    pwm_ENB.ChangeDutyCycle(20)
+    GPIO.output(IN4, GPIO.HIGH)
+    global info
+    info = "right"
+    pwm_ENA.ChangeDutyCycle(speed)
+    pwm_ENB.ChangeDutyCycle(speed)
     time.sleep(delaytime)
 
 #小车原地左转
-def spin_left(delaytime):
+def spin_left(delaytime,speed):
     GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.HIGH)
     GPIO.output(IN3, GPIO.HIGH)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(20)
-    pwm_ENB.ChangeDutyCycle(20)
+    pwm_ENA.ChangeDutyCycle(speed)
+    pwm_ENB.ChangeDutyCycle(speed)
     time.sleep(delaytime)
 
 #小车原地右转
-def spin_right(delaytime):
+def spin_right(delaytime,speed):
     GPIO.output(IN1, GPIO.HIGH)
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.HIGH)
-    pwm_ENA.ChangeDutyCycle(20)
-    pwm_ENB.ChangeDutyCycle(20)
+    pwm_ENA.ChangeDutyCycle(speed)
+    pwm_ENB.ChangeDutyCycle(speed)
     time.sleep(delaytime)
 
 #小车停止	
-def brake(delaytime):
+def brake(delaytime,speed):
     GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(20)
-    pwm_ENB.ChangeDutyCycle(20)
+    info = "stop"
+    pwm_ENA.ChangeDutyCycle(speed)
+    pwm_ENB.ChangeDutyCycle(speed)
     time.sleep(delaytime)
+
 
 def destroy():
     #停止pwm

@@ -25,19 +25,21 @@ def car_control(ip, port, delay):
             move = Server.receive(client, delay)
             global move_num
             if move == 'w':
-                CarRun.run(0.5)
+                CarRun.run(0.5,20)
                 move_num = 'run'
             elif move == 's':
-                CarRun.back(0.5)
+                CarRun.back(0.5,20)
                 move_num = 'back'
             elif move == 'a':
-                CarRun.left(0.5)
+                CarRun.left(0.5,30)
+                CarRun.run(0.5,20)
                 move_num = 'left'
             elif move == 'd':
-                CarRun.right(0.5)
+                CarRun.right(0.5,30)
+                CarRun.run(0.5,20)
                 move_num = 'right'
             elif move == 'space':
-                CarRun.brake(0.5)
+                CarRun.brake(0.5,20)
                 move_num = 'stop'
             
     except KeyboardInterrupt:
