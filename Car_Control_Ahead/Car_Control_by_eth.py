@@ -14,7 +14,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(R, GPIO.OUT)
 GPIO.setup(G, GPIO.OUT)
 GPIO.setup(B, GPIO.OUT)
-move_num = ''
+move_num = 'stop'
 
 
 def car_control(ip, port, delay):
@@ -56,7 +56,7 @@ def sent_info(ip, port, delay):
             global move_num
             info = move_num
             Client.send(mySocket, info, delay)
-            sleep(0.5)
+            move_num = 'run'
     except KeyboardInterrupt:
         pass
 

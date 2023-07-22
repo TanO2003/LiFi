@@ -2,6 +2,9 @@
 import RPi.GPIO as GPIO
 import time
 
+
+
+
 #小车电机引脚定义
 IN1 = 20
 IN2 = 21
