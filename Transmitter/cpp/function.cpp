@@ -24,18 +24,23 @@ uint8_t crc8(const unsigned char* data) {
 
 
 
-Sender::Sender(int pin)
+Sender::Sender(int pin_output)
 {
-    this->pin=pin;
+    this->pin=pin_output;
     wiringPiSetup();
     pinMode(pin,OUTPUT);
 }
 
 
-void Sender::SendMessage(string text)
+void Sender::SendMessage(string text, int _Delay_ms)
 {
-
+    this->message=text;
+    this->Delay_ms=_Delay_ms;
+    Str2Bin();
+    AddCrc();
+    SendData();
 }
+
 
 
 void Sender::Str2Bin()
@@ -69,7 +74,7 @@ void Sender::Str2Bin()
 
 void Sender::AddCrc()
 {
-    unsigned char* data_byte = &binary[28];
+    unsigned char* data_byte = &binary[preambleSize+crcSize];
     uint8_t calculatedCRC = crc8(data_byte);
     for(int i=0;i<crcSize;i++)
     {
@@ -84,7 +89,6 @@ void Sender::SendData()
     {
         DataBit[i]=binary[i]-'0';
     }
-    const int Delay_ms = 1;
     const int desiredFrequency = 1000 / Delay_ms;
     const auto timePeriod = chrono::microseconds(1000000 / desiredFrequency);
     auto nextSyncTime = chrono::steady_clock::now() + timePeriod;
@@ -96,3 +100,92 @@ void Sender::SendData()
     }
 }
 
+
+Receiver::Receiver(int pin_input)
+{
+    this->pin=pin_input;
+    wiringPiSetup();
+    pinMode(pin,INPUT);
+}
+
+
+
+bool Receiver::LookForSync()
+{
+    stack<int> p_stack;
+    const int desiredFrequency = 1000 / Delay_ms;
+    const auto timePeriod = chrono::microseconds(1000000 / desiredFrequency);
+    auto nextSyncTime = chrono::steady_clock::now() + timePeriod;
+    for(int i=0;i<preambleSize;i++)
+    {
+        this_thread::sleep_until(nextSyncTime);
+        p_stack.push(digitalRead(pin));
+        nextSyncTime += timePeriod;
+    }
+    for (int i = preambleSize-1; i >= 0; i--)
+    {
+        if (p_stack.top() != sequenze[i])
+        {
+            return false;
+        }
+        p_stack.pop();
+    }
+    return true;
+}
+
+
+void Receiver::Bin2Str()
+{
+    for(int i=0;i<dataSize/8;i++)
+    {
+        int temp=0;
+        for(int j=0;j<8;j++)
+        {
+            temp +=(message_bin[preambleSize+crcSize+i*8+j]-'0') * pow(2,7-j);
+        }
+        message += (char)temp;
+    }
+
+}
+
+
+string Receiver::ReceiveMessage(int _Delay_ms)
+{
+    this->Delay_ms=_Delay_ms;
+    if (LookForSync)
+    {
+        const int desiredFrequency = 1000 / Delay_ms;
+        const auto timePeriod = chrono::microseconds(1000000 / desiredFrequency);
+        auto nextSyncTime = chrono::steady_clock::now() + timePeriod;
+        for(int i=preambleSize;i<totalSize;i++)
+        {
+            this_thread::sleep_until(nextSyncTime);
+            message_bin[i]=digitalRead(pin)+'0';
+            nextSyncTime += timePeriod;
+        }
+        //crc check
+        unsigned char* data_byte = &message_bin[preambleSize+crcSize];
+        uint8_t calculatedCRC = crc8(data_byte);
+        uint8_t receivedCRC = 0x00;
+        for(int i=0;i<crcSize;i++)
+        {
+            receivedCRC += (message_bin[preambleSize+i]-'0') * pow(2,crcSize-i-1);
+        }
+        if (calculatedCRC == receivedCRC)
+        {
+            Bin2Str();
+        }
+        else
+        {
+            cout<<"CRC check failed"<<endl;
+            return -1;
+        }
+
+    }
+    else
+    {
+        cout<<"No sync found"<<endl;
+        return -1;
+    }
+    return message;
+}
