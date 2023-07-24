@@ -116,19 +116,27 @@ bool Receiver::LookForSync()
     const int desiredFrequency = 1000 / Delay_ms;
     const auto timePeriod = chrono::microseconds(1000000 / desiredFrequency);
     auto nextSyncTime = chrono::steady_clock::now() + timePeriod;
-    for(int i=0;i<preambleSize;i++)
+    if (digitalRead(pin) == sequenze[0])
     {
-        this_thread::sleep_until(nextSyncTime);
         p_stack.push(digitalRead(pin));
-        nextSyncTime += timePeriod;
-    }
-    for (int i = preambleSize-1; i >= 0; i--)
-    {
-        if (p_stack.top() != sequenze[i])
+        for(int i=1;i<preambleSize;i++)
         {
-            return false;
+            this_thread::sleep_until(nextSyncTime);
+            p_stack.push(digitalRead(pin));
+            nextSyncTime += timePeriod;
         }
-        p_stack.pop();
+        for (int i = preambleSize-1; i >= 0; i--)
+        {
+            if (p_stack.top() != sequenze[i])
+            {
+                return false;
+            }
+            p_stack.pop();
+        }
+    }
+    else 
+    {
+        return false;
     }
     return true;
 }
@@ -152,7 +160,7 @@ void Receiver::Bin2Str()
 string Receiver::ReceiveMessage(int _Delay_ms)
 {
     this->Delay_ms=_Delay_ms;
-    if (LookForSync)
+    while (LookForSync())
     {
         const int desiredFrequency = 1000 / Delay_ms;
         const auto timePeriod = chrono::microseconds(1000000 / desiredFrequency);
@@ -174,18 +182,15 @@ string Receiver::ReceiveMessage(int _Delay_ms)
         if (calculatedCRC == receivedCRC)
         {
             Bin2Str();
+            break;
         }
         else
         {
             cout<<"CRC check failed"<<endl;
-            return -1;
+            return;
         }
 
     }
-    else
-    {
-        cout<<"No sync found"<<endl;
-        return -1;
-    }
+
     return message;
 }

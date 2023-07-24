@@ -4,14 +4,17 @@ import re
 
 def bin_2_str(bin):
     # 二进制转换为字符串
-    messages=re.findall('10000001(.*?)10000001',bin)
-    for message in messages:
-        message.replace('000001','00000')
+    messages=bin[:-10]
+    #print(messages)
+    position=messages.rfind('10101010')
+    messages=messages[position+8:]
+    print(messages)
+    #messages=re.findall('10101010(.*?)10101010',bin)
+    messages.replace('000001','00000')
     string=''
-    for message in messages:
-        bytes_list = re.findall('.{8}', message)
-        for byte in bytes_list:
-            string += chr(int(byte, 2))
+    bytes_list = re.findall('.{8}', messages)
+    for byte in bytes_list:
+        string += chr(int(byte, 2))
     return string
     #return ''.join([chr(i) for i in [int(b, 2) for b in bin.split('')]])
 
@@ -23,15 +26,13 @@ def receiver(delay):
     # 接收
     while True:
         a = ''
-        i = 0
-        while i < 2:
+        while 1:
             a += str(GPIO.input(6))
-            #print(a)
             sleep(delay)
-            if a[-8:] == "10000001":
-                i += 1
+            if a[-10:] == "1010101011":
+                break
             #print(i)
         #print(a)
         print(bin_2_str(a))
 
-receiver(0.5)
+receiver(0.005)

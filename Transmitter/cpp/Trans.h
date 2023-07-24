@@ -9,7 +9,7 @@
 #include <stack>
 #include <cmath>
 
-using namespace std;
+
 
 const int preambleSize = 20;
 const int crcSize = 8;
@@ -25,18 +25,18 @@ uint8_t crc8(const unsigned char* data);
 
 class Sender
 {
-    pubilc:
-    string message;
+    public:
+    std::string message;
     int pin;
     int Delay_ms;
 
     Sender(int pin_output);
-    void SendMessage(string text, int _Delay_ms);
+    void SendMessage(std::string text, int _Delay_ms);
 
 
     private:
-    char binary[preambleSize+dataSize+crcSize]={'1','0','1','0','1','0','1','0','1','0','1','1','1','1','1','1','1','1','1','1'};
-    string message_byte;
+    char binary[preambleSize+dataSize+crcSize]={'0','1','0','1','0','1','0','1','0','1','0','0','0','0','0','0','0','0','0','0'};
+    std::string message_byte;
 
     void Str2Bin();
     void AddCrc();
@@ -47,17 +47,17 @@ class Sender
 
 class Receiver
 {
-    pubilc:
-    string message;
+    public:
+    std::string message;
     int pin;
     int Delay_ms;
 
     Receiver(int pin_input);
-    string ReceiveMessage(int _Delay_ms);
+    std::string ReceiveMessage(int _Delay_ms);
 
 
     private:
-    const int sequenze[preambleSize]={1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1};
+    const int sequenze[preambleSize]={0,1,0,1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0};
     char message_bin[totalSize]={'0'};
     
 
