@@ -13,7 +13,7 @@ def Haming_decode(text):
     return ''.join(str(bits[i]) for i in (3, 5, 6, 7))
 
 
-def bin_2_str(bin):
+def bin_2_str(bin)->str:
     # 二进制转换为字符串
     
     messages=bin[:-10]
@@ -29,25 +29,22 @@ def bin_2_str(bin):
             string += chr(int(byte, 2))
         return string
     except Exception:
-        print("Error!")
-        return -1
+        return "Error"
 
+def receiver_init():
 
-GPIO.setmode(GPIO.BCM)
+    GPIO.setmode(GPIO.BCM)
 
-GPIO.setup(6, GPIO.IN)
+    GPIO.setup(6, GPIO.IN)
 
-def receiver(delay):
+def receive(delay)->str:
     # 接收
-    while True:
-        a = ''
-        while 1:
-            a += str(GPIO.input(6))
-            sleep(delay)
-            if a[-10:] == "1010101011":
-                break
-            #print(i)
-        #print(a)
-        print(bin_2_str(a))
+    a = ''
+    while 1:
+        a += str(GPIO.input(6))
+        sleep(delay)
+        if a[-10:] == "1010101011":
+            break
+    return bin_2_str(a)
 
-receiver(0.005)
+
