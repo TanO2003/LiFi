@@ -1,6 +1,8 @@
 import socket
 import time
 import keyboard
+import tkinter as tk
+from threading import Thread
 
 def get_key():
     event = keyboard.read_event()
@@ -36,15 +38,44 @@ def send(mySocket, text, delay):
         mySocket.close()
         exit()
 
-if __name__ == '__main__':
-    ip = '192.168.137.6'
-    port = 2222
-    mySocket = clinet_init(ip, port)
+global _mode
+_mode = "stop"
 
+def on_button_click(mode):
+    global _mode
+    _mode = mode
+
+
+def create_button(root, text, mode):
+    button = tk.Button(root, text=text, command=lambda: on_button_click(mode))
+    button.pack(pady=5)
+
+
+def send_main(ip, port):
+    mySocket = clinet_init(ip, port)
     try:
         while True:
-            text = get_key()
+            global _mode
+            text = _mode
             send(mySocket, text, 0.01)
     except KeyboardInterrupt:
         send(mySocket, 'over', 0.01)
         pass
+
+
+
+if __name__ == '__main__':
+    ip = '192.168.137.6'
+    port = 2222
+    root = tk.Tk()
+    root.title("控制按钮")
+
+    create_button(root, "直行", "w")
+    create_button(root, "左转", "a")
+    create_button(root, "右转", "d")
+    create_button(root, "停止", "space")
+
+    t2 = Thread(target=send_main, args=(ip, port))
+    t2.start()
+    root.mainloop()
+

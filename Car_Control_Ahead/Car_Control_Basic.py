@@ -3,7 +3,7 @@ import Server
 import RPi.GPIO as GPIO
 from time import sleep
 from threading import Thread
-#import Sender_number_only
+from Sender import send, sender_init
 
 
 R = 22
@@ -13,7 +13,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(R, GPIO.OUT)
 GPIO.setup(G, GPIO.OUT)
 GPIO.setup(B, GPIO.OUT)
-move_num = 0
+move_num = 'init'
 
 
 def car_control(ip, port, delay):
@@ -24,30 +24,22 @@ def car_control(ip, port, delay):
             move = Server.receive(client, delay)
             global move_num
             if move == 'w':
-                
-                move_num = 0
-                GPIO.output(R, GPIO.HIGH)
-                GPIO.output(G, GPIO.HIGH)
-                GPIO.output(B, GPIO.HIGH)
-                sleep(0.3)
-                CarRun.run(0.5)
+                CarRun.run(0.5,20)
+                move_num = 'w'
             elif move == 's':
-                CarRun.back(0.5)
-                move_num = 1
+                CarRun.back(0.5,20)
+                move_num = 's'
             elif move == 'a':
-                CarRun.left(0.5)
-                move_num = 2
+                CarRun.left(0.5,30)
+                CarRun.run(0.5,20)
+                move_num = 'a'
             elif move == 'd':
-                CarRun.right(0.5)
-                move_num = 3
+                CarRun.right(0.5,30)
+                CarRun.run(0.5,20)
+                move_num = 'd'
             elif move == 'space':
-                
-                move_num = 4
-                GPIO.output(R, GPIO.LOW)
-                GPIO.output(G, GPIO.LOW)
-                GPIO.output(B, GPIO.LOW)
-                sleep(0.3)
-                CarRun.brake(0.5)
+                CarRun.brake(0.5,20)
+                move_num = '0'
             
     except KeyboardInterrupt:
         pass
@@ -56,16 +48,25 @@ def car_control(ip, port, delay):
 
 def sent_info():
     try:
-        while True:
-            info = CarRun.get_info() 
-            sleep(1)
-            return info
+        sender_init()
+        info = move_num
+        if info != 'init':
+            for i in range(5):
+                send(info, 0.005)
+                sleep(0.5)
+        info = 'init'
     except KeyboardInterrupt:
         pass
 
 if __name__ == '__main__':
-    ip = '192.168.137.30'
+    ip = '192.168.137.6'
     port = 2222
-    delay = 0.01
-    car_control(ip, port, delay)
+    delay = 0.001
+    t1 = Thread(target = car_control, args=(ip, port, delay))
+    t2 = Thread(target = sent_info)
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
+
 

@@ -15,6 +15,7 @@ try:
     receiver_init()
     while True:
         move = receive(0.005)
+        print(move)
         if move == 'w':
             sleep(0.5)
             CarRun.run(0.5,20)
@@ -27,7 +28,7 @@ try:
         elif move == 'd':
             sleep(0.5)
             CarRun.right(0.5,60)
-        elif move == 'stop':
+        elif move == '0':
             sleep(0.5)
             CarRun.brake(0.5,60)
 except KeyboardInterrupt:

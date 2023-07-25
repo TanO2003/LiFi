@@ -47,4 +47,3 @@ def receive(delay)->str:
             break
     return bin_2_str(a)
 
-
