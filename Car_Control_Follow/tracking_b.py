@@ -14,8 +14,7 @@ TSLP2 = 5
 TSRP1 = 4
 TSRP2 = 18
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+
 
 
 
@@ -23,6 +22,8 @@ GPIO.setwarnings(False)
 def init():
 	global pwm_ENA
 	global pwm_ENB
+	GPIO.setmode(GPIO.BCM)
+	GPIO.setwarnings(False)
 	GPIO.setup(ENA,GPIO.OUT,initial=GPIO.HIGH)
 	GPIO.setup(IN1,GPIO.OUT,initial=GPIO.LOW)
 	GPIO.setup(IN2,GPIO.OUT,initial=GPIO.LOW)
@@ -78,7 +79,7 @@ def track():
 		back(0,20)
 '''
 def tri(order):
-	
+	v1 = v2 = 0
 	if order == 'r':
 		v1=10
 		v2=0
@@ -129,7 +130,7 @@ def tr(mode):
 	TSLV2 = GPIO.input(TSLP2)
 	TSRV1 = GPIO.input(TSRP1)
 	TSRV2 = GPIO.input(TSRP2)
-	if us.Distance_test() <= 5
+	if us.Distance_test() <= 5:
 		brake()
 	elif not ((TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1)):
 		print("track")
