@@ -39,19 +39,18 @@ def sender_init():
     GPIO.setup(IN3, GPIO.OUT)
 
 def send(text,delay):
-    while True:
-        signal = list(str_2_bin(text))
-        #signal = list('10000001'+text+'10000001')
-        for i in signal:
-            if i == '1':
-                GPIO.output(IN3, GPIO.LOW)
-                GPIO.output(IN2, GPIO.LOW)
-                GPIO.output(IN1, GPIO.LOW)
-            elif i == '0':
-                GPIO.output(IN3, GPIO.HIGH)
-                GPIO.output(IN2, GPIO.HIGH)
-                GPIO.output(IN1, GPIO.HIGH)
-            sleep(delay)
+    signal = list(str_2_bin(text))
+    #signal = list('10000001'+text+'10000001')
+    for i in signal:
+        if i == '1':
+            GPIO.output(IN3, GPIO.LOW)
+            GPIO.output(IN2, GPIO.LOW)
+            GPIO.output(IN1, GPIO.LOW)
+        elif i == '0':
+            GPIO.output(IN3, GPIO.HIGH)
+            GPIO.output(IN2, GPIO.HIGH)
+            GPIO.output(IN1, GPIO.HIGH)
+        sleep(delay)
                 
 
 

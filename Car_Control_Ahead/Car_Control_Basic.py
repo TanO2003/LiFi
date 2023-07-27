@@ -28,25 +28,26 @@ def car_control(ip, port, delay):
             
     except KeyboardInterrupt:
         pass
+    except Exception:
+        return
 
 
 
 def sent_info():
     try:
         sender_init()
+        global move_num
         while 1:
-            global move_num
-            info = move_num
-            if info != 'init':
-                for i in range(5):
-                    send(info, 0.005)
-                    sleep(0.5)
-            info = 'init'
+            if move_num != 'init':
+                info = move_num
+                send(info, 0.005)
+            sleep(0.3)
+
     except KeyboardInterrupt:
         pass
 
 if __name__ == '__main__':
-    ip = '192.168.137.6'
+    ip = '192.168.137.15'
     port = 2222
     delay = 0.001
     t1 = Thread(target = car_control, args=(ip, port, delay))

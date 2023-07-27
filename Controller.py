@@ -18,7 +18,7 @@ def clinet_init(host_address, host_port):
     port = host_port
 
     try:
-        mySocket.connect(host, 2222)
+        mySocket.connect((host,port))
         print("连接成功") ##连接到服务器
     except :                           
         print ('连接不成功')
@@ -61,7 +61,7 @@ def button():
     root.mainloop()
 
 def send_main():
-    ip = '192.168.137.6'
+    ip = '192.168.137.15'
     port = 2222
 
 
