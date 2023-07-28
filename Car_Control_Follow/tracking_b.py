@@ -62,25 +62,24 @@ def brake():
 	GPIO.output(IN3,GPIO.LOW)
 	GPIO.output(IN4,GPIO.LOW)
 
-def track(TSLV1,TSLV2,TSRV1,TSRV2):
-	v1_tr =0
-	v2_tr =0
+def track():
+	print("track")
+	TSLV1 = GPIO.input(TSLP1)
+	TSLV2 = GPIO.input(TSLP2)
+	TSRV1 = GPIO.input(TSRP1)
+	TSRV2 = GPIO.input(TSRP2)
+	
 	if TSLV1==0 and TSLV2==1 and TSRV1==1 and TSRV2==1:
-		v1_tr=1
-		v2_tr=16
+		run(1,16)
 	elif TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==1:
-		v1_tr=2
-		v2_tr=2
+		run(4,4)
 	elif TSLV1==1 and TSLV2==0 and TSRV1==1 and TSRV2==1:
-		v1_tr=1
-		v2_tr=16
+		run(1,16)
 	elif TSLV1==1 and TSLV2==1 and TSRV1==0 and TSRV2==1:
-		v1_tr=16
-		v2_tr=1
+		run(16,1)
 	elif TSLV1==1 and TSLV2==1 and TSRV1==1 and TSRV2==0:
-		v1_tr=16
-		v2_tr=1
-	run(v1_tr,v2_tr)
+		run(16,1)
+	
 	#time.sleep(0.01)
 ''' 
 def track(): 
@@ -88,18 +87,14 @@ def track():
 		back(0,20)
 '''
 def tri(order):
-	v1 = v2 = 0
+	
 	if order == 'r':
-		v1=16
-		v2=1
+		run(16,1)
 	elif order == 'l':
-		v1=1
-		v2=16
+		run(1,16)
 	elif order == 'g':
-		v1=2
-		v2=2
+		run(6,6)
 	while True:
-		run(v1,v2)
 		#time.sleep(0.2)
 		TSLV1_tri = GPIO.input(TSLP1)
 		TSLV2_tri = GPIO.input(TSLP2)
@@ -109,18 +104,15 @@ def tri(order):
 			return
 	
 def dou(order):
-	v1_dou=v2_dou=0
+	
 	if order == 'r':
-		v1_dou=16
-		v2_dou=1
+		run(16,1)
 	elif order == 'l':
-		v1_dou=1
-		v2_dou=16
+		run(1,16)
 	elif order == 'g':
-		v1_dou=2
-		v1_dou=2
+		run(6,6)
 	while True:
-		run(v1_dou,v2_dou)
+		
 		#time.sleep(0.2)
 		TSLV1_dou = GPIO.input(TSLP1)
 		TSLV2_dou = GPIO.input(TSLP2)
@@ -130,32 +122,33 @@ def dou(order):
 			return
 			
 
-
-
-def tr(mode):
-	order= mode
-	us.init()
+def detect()->str:
 	TSLV1 = GPIO.input(TSLP1)
 	TSLV2 = GPIO.input(TSLP2)
 	TSRV1 = GPIO.input(TSRP1)
 	TSRV2 = GPIO.input(TSRP2)
-	if us.Distance_test() <= 5:
-		brake()
-	elif not ((TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1)):
-		print("track")
-		track(TSLV1,TSLV2,TSRV1,TSRV2)
+	if not ((TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1)):
+		return 'track'
 	elif TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0:
-		print("tri")
-		tri(order)
-	elif TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0:
-		dou(order)
-	elif TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1:
-		dou(order)
+		return 'tri'
+	elif (TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0) or (TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1):
+		return 'dou'
+	else:
+		return 'stop'
+
+
 	
 	
 	
 	
 	
+if __name__ == '__main__':
+	try:
+		mode = input("input mode:")
+		while True:
+			tr(mode)
+	except KeyboardInterrupt:
+		GPIO.cleanup()
 	
 	
 	
