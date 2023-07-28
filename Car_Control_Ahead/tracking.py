@@ -62,15 +62,20 @@ def brake():
 
 def track(TSLV1,TSLV2,TSRV1,TSRV2):
 	if TSLV1==0 and TSLV2==1 and TSRV1==1 and TSRV2==1:
-		run(5,0)
+		run(16,1)
+		#time.sleep(0.01)
 	elif TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==1:
 		run(2,2)
+		#time.sleep(0.01)
 	elif TSLV1==1 and TSLV2==0 and TSRV1==1 and TSRV2==1:
-		run(5,2)
+		run(16,1)
+		#time.sleep(0.01)
 	elif TSLV1==1 and TSLV2==1 and TSRV1==0 and TSRV2==1:
-		run(2,5)
+		run(1,16)
+		#time.sleep(0.01)
 	elif TSLV1==1 and TSLV2==1 and TSRV1==1 and TSRV2==0:
-		run(0,5)
+		run(1,16)
+		#time.sleep(0.01)
 ''' 
 def track():
 	if TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0:
@@ -79,17 +84,17 @@ def track():
 def tri(order):
 	
 	if order == 'r':
-		v1=0
-		v2=10
+		v1=1
+		v2=16
 	elif order == 'l':
-		v1=10
-		v2=0
+		v1=16
+		v2=1
 	elif order == 'g':
 		v1=2
 		v2=2
 	while True:
 		run(v1,v2)
-		time.sleep(0.2)
+		#time.sleep(0.01)
 		TSLV1_tri = GPIO.input(TSLP1)
 		TSLV2_tri = GPIO.input(TSLP2)
 		TSRV1_tri = GPIO.input(TSRP1)
@@ -100,17 +105,17 @@ def tri(order):
 def dou(order):
 	v1_dou=v2_dou=0
 	if order == 'r':
-		v1_dou=0
-		v2_dou=5
+		v1_dou=1
+		v2_dou=16
 	elif order == 'l':
-		v1_dou=5
-		v2_dou=0
+		v1_dou=16
+		v2_dou=1
 	elif order == 'g':
 		v1_dou=2
 		v1_dou=2
 	while True:
 		run(v1_dou,v2_dou)
-		time.sleep(0.2)
+		#time.sleep(0.2)
 		TSLV1_dou = GPIO.input(TSLP1)
 		TSLV2_dou = GPIO.input(TSLP2)
 		TSRV1_dou = GPIO.input(TSRP1)
@@ -129,10 +134,8 @@ def tr(mode):
 	TSRV1 = GPIO.input(TSRP1)
 	TSRV2 = GPIO.input(TSRP2)
 	if not ((TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1)):
-		print("track")
 		track(TSLV1,TSLV2,TSRV1,TSRV2)
 	elif TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0:
-		print("tri")
 		tri(order)
 	elif TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0:
 		dou(order)
