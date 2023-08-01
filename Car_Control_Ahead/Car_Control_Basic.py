@@ -21,10 +21,13 @@ def car_control(ip, port, delay):
         tr.init()
         while True:
             move = Server.receive(client, delay)
+            if move == 'i':
+                send(move, 0.005)
+                move = 'g'
             global move_num
             move_num = move
             tr.tr(move)
-            sleep(0.5)
+            sleep(0.1)
             
     except KeyboardInterrupt:
         pass

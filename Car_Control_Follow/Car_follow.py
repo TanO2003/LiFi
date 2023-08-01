@@ -15,11 +15,10 @@ def receive_main():
         while 1:
             global mode
             _mode = receive(0.005)
-            if _mode == 'r' or _mode == 'g' or _mode == 'l':
+            if _mode == 'r' or _mode == 'g' or _mode == 'l' or _mode == 's':
                 mode = _mode
             else:
                 pass
-            sleep(0.5)
     except KeyboardInterrupt:
         GPIO.cleanup()
         exit()
@@ -27,14 +26,17 @@ def receive_main():
 
 def tr_main():
     try:
-        while 1:
-            global mode
+        global mode
+        while mode != 's':
+            
             if tr.detect() == 'track':
                 tr.track()
             elif tr.detect() == 'tri':
                 tr.tri(mode)
             elif tr.detect() == 'dou':
                 tr.dou(mode)
+            else:
+                continue
     except KeyboardInterrupt:
         GPIO.cleanup()
         exit()
@@ -43,7 +45,14 @@ def tr_main():
 if __name__ == '__main__':
     tr.init()
     receiver_init()
-    t1 = Thread(target=receive_main)
-    t2 = Thread(target=tr_main)
-    t1.start()
-    t2.start()
+    while 1:
+        if a := receive(0.005) == 'i':
+            t1 = Thread(target=receive_main)
+            t2 = Thread(target=tr_main)
+            t1.start()
+            t2.start()
+            t1.join()
+            t2.join()
+            break
+        else:
+            continue

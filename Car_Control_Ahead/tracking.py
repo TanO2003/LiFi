@@ -133,6 +133,10 @@ def tr(mode):
 	TSLV2 = GPIO.input(TSLP2)
 	TSRV1 = GPIO.input(TSRP1)
 	TSRV2 = GPIO.input(TSRP2)
+	if mode == 's':
+		brake()
+		time.sleep(0.5)
+		return
 	if not ((TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1)):
 		track(TSLV1,TSLV2,TSRV1,TSRV2)
 	elif TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0:

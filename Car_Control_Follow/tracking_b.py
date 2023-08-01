@@ -63,7 +63,6 @@ def brake():
 	GPIO.output(IN4,GPIO.LOW)
 
 def track():
-	print("track")
 	TSLV1 = GPIO.input(TSLP1)
 	TSLV2 = GPIO.input(TSLP2)
 	TSRV1 = GPIO.input(TSRP1)
@@ -87,7 +86,7 @@ def track():
 		back(0,20)
 '''
 def tri(order):
-	
+	print('tri:',mode)
 	if order == 'r':
 		run(16,1)
 	elif order == 'l':

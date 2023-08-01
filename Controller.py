@@ -54,10 +54,11 @@ def create_button(root, text, mode):
 def button():
     root = tk.Tk()
     root.title("控制按钮")
+    create_button(root, "启动", "i")
     create_button(root, "直行", "g")
     create_button(root, "左转", "l")
     create_button(root, "右转", "r")
-    #create_button(root, "停止", "space")
+    create_button(root, "停止", "s")
     root.mainloop()
 
 def send_main():
@@ -70,8 +71,12 @@ def send_main():
     mySocket = clinet_init(ip, port)
 
     try:
+        global _mode
         while True:
             text = _mode
+            if text == 'i':
+                send(mySocket, text, 0.01)
+                _mode = 'g'
             send(mySocket, text, 0.01)
             print(_mode)
             time.sleep(0.5)
@@ -85,5 +90,7 @@ if __name__ == '__main__':
 
     t2.start()
     t1.start()
+    t1.join()
+    t2.join()
     
 
