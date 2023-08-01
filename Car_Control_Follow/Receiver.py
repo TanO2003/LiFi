@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from time import sleep
+from time import sleep,time
 import re
 import numpy as np
 from functools import reduce
@@ -40,10 +40,16 @@ def receiver_init():
 def receive(delay)->str:
     # 接收
     a = ''
+    time_in = time()
     while 1:
         a += str(GPIO.input(6))
+        if '0' in a:
+            time_in = time()
         sleep(delay)
         if a[-10:] == "1010101011":
+            break
+        now = time()
+        if now - time_in >= 1:
             break
     return bin_2_str(a)
 

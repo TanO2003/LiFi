@@ -1,14 +1,9 @@
 import socket
 import time
-import keyboard
 import tkinter as tk
-from threading import Thread
+from threading import Thread,Event
 
-def get_key():
-    event = keyboard.read_event()
-    return event.name
-
-
+over_signal = Event()
 
 def clinet_init(host_address, host_port):
     #套接字接口
@@ -39,7 +34,7 @@ def send(mySocket, text, delay):
         exit()
 
 global _mode
-_mode = "g"
+_mode = ""
 
 def on_button_click(mode):
     global _mode
@@ -52,14 +47,18 @@ def create_button(root, text, mode):
 
 
 def button():
-    root = tk.Tk()
-    root.title("控制按钮")
-    create_button(root, "启动", "i")
-    create_button(root, "直行", "g")
-    create_button(root, "左转", "l")
-    create_button(root, "右转", "r")
-    create_button(root, "停止", "s")
-    root.mainloop()
+    try:
+        root = tk.Tk()
+        root.title("控制按钮")
+        create_button(root, "启动", "start")
+        create_button(root, "直行", "g")
+        create_button(root, "左转", "l")
+        create_button(root, "右转", "r")
+        create_button(root, "停止", "stop")
+        root.mainloop()
+    except Exception:
+        over_signal.set()
+        exit()
 
 def send_main():
     ip = '192.168.137.15'
@@ -74,14 +73,13 @@ def send_main():
         global _mode
         while True:
             text = _mode
-            if text == 'i':
-                send(mySocket, text, 0.01)
-                _mode = 'g'
-            send(mySocket, text, 0.01)
+            send(mySocket, text, 0.001)
             print(_mode)
-            time.sleep(0.5)
-    except KeyboardInterrupt:
-        send(mySocket, 'over', 0.01)
+            time.sleep(0.01)
+            if over_signal.is_set():
+                send(mySocket, 'over', 0.001)
+                exit()
+    except Exception:
         pass
 
 if __name__ == '__main__':

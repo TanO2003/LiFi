@@ -146,7 +146,9 @@ def tr(mode):
 	elif TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1:
 		dou(order)
 	
-	
+def destroy():
+	GPIO.cleanup()
+	return
 	
 	
 	

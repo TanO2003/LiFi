@@ -1,6 +1,8 @@
 import socket
 import time
+from threading import Event
 
+start_signal = Event()
 
 def server_init(host_address, host_port):
     # 套接字接口
@@ -18,15 +20,17 @@ def server_init(host_address, host_port):
 
 def receive(client, delay):
 
-    #print("新连接")
-    #print("IP is %s" % address[0])
-    #print("port is %d\n" % address[1])
+
     while True:
         # 读取消息, 把接收到的数据进行解码
         msg = client.recv(1024).decode("utf-8")
         
         time.sleep(delay)
 
+
+        if msg == 'start':
+            start_signal.set()
+            return msg
         
         
         if msg == "over":

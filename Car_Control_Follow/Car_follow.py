@@ -3,22 +3,25 @@ from time import sleep
 from Receiver import receive, receiver_init
 import tracking_b as tr
 
-from threading import Thread
-
+from threading import Thread, Event
 
 
 global mode
 mode = 'g'
 
+stop_event = Event()
+
+
 def receive_main():
     try:
-        while 1:
+        while not stop_event.is_set():
             global mode
             _mode = receive(0.005)
-            if _mode == 'r' or _mode == 'g' or _mode == 'l' or _mode == 's':
+            if _mode == 'r' or _mode == 'g' or _mode == 'l':
                 mode = _mode
             else:
                 pass
+            sleep(0.5)
     except KeyboardInterrupt:
         GPIO.cleanup()
         exit()
@@ -26,17 +29,14 @@ def receive_main():
 
 def tr_main():
     try:
-        global mode
-        while mode != 's':
-            
+        while not stop_event.is_set():
+            global mode
             if tr.detect() == 'track':
                 tr.track()
             elif tr.detect() == 'tri':
                 tr.tri(mode)
             elif tr.detect() == 'dou':
                 tr.dou(mode)
-            else:
-                continue
     except KeyboardInterrupt:
         GPIO.cleanup()
         exit()
@@ -45,14 +45,15 @@ def tr_main():
 if __name__ == '__main__':
     tr.init()
     receiver_init()
-    while 1:
-        if a := receive(0.005) == 'i':
-            t1 = Thread(target=receive_main)
-            t2 = Thread(target=tr_main)
-            t1.start()
-            t2.start()
-            t1.join()
-            t2.join()
+    t1 = Thread(target=receive_main)
+    t2 = Thread(target=tr_main)
+    t1.start()
+    t2.start()
+    while True:
+        a=input()
+        if a=='exit':
             break
-        else:
-            continue
+    stop_event.set()
+    t1.join()
+    t2.join()
+    exit()
