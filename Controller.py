@@ -46,6 +46,15 @@ def create_button(root, text, mode):
     button.pack(pady=5)
 
 
+def on_closing():
+    # 处理关闭窗口事件的代码
+    over_signal.set()
+    time.sleep(0.1)
+    exit()
+
+
+
+
 def button():
     try:
         root = tk.Tk()
@@ -55,9 +64,12 @@ def button():
         create_button(root, "左转", "l")
         create_button(root, "右转", "r")
         create_button(root, "停止", "stop")
+        root.protocol("WM_DELETE_WINDOW", on_closing)
         root.mainloop()
+        root.destroy()
     except Exception:
         over_signal.set()
+        time.sleep(0.1)
         exit()
 
 def send_main():
@@ -74,13 +86,13 @@ def send_main():
         while True:
             text = _mode
             send(mySocket, text, 0.001)
-            print(_mode)
+            #print(_mode)
             time.sleep(0.01)
             if over_signal.is_set():
                 send(mySocket, 'over', 0.001)
                 exit()
     except Exception:
-        pass
+        exit()
 
 if __name__ == '__main__':
     t1 = Thread(target=send_main)

@@ -3,6 +3,7 @@ import time
 from threading import Event
 
 start_signal = Event()
+over_signal = Event()
 
 def server_init(host_address, host_port):
     # 套接字接口
@@ -35,6 +36,7 @@ def receive(client, delay):
         
         if msg == "over":
             client.close()
+            over_signal.set()
             #mySocket.close()
             print("程序结束\n")
             exit()

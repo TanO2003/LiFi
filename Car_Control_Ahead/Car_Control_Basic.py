@@ -15,7 +15,7 @@ GPIO.setup(B, GPIO.OUT)
 
 move_num = 'init'
 
-over_signal = Event()
+
 
 def car_control(ip, port, delay):
     try:
@@ -37,7 +37,7 @@ def car_control(ip, port, delay):
             
 
     except Exception:
-        over_signal.set()
+        Server.over_signal.set()
         exit()
 
 
@@ -52,7 +52,7 @@ def sent_info():
                 info = move_num
                 send(info, 0.005)
             sleep(0.3)
-            if over_signal.is_set():
+            if Server.over_signal.is_set():
                 exit()
 
     except Exception:
