@@ -14,7 +14,7 @@ GPIO.setup(G, GPIO.OUT)
 GPIO.setup(B, GPIO.OUT)
 
 move_num = 'init'
-
+stop_signal = Event()
 
 
 def car_control(ip, port, delay):
@@ -26,11 +26,13 @@ def car_control(ip, port, delay):
             global move_num
             move_num = move
             if move == 'stop':
+                stop_signal.set()
+                Server.start_signal.clear()
                 tr.brake()
-                tr.destroy()
                 continue
-            while not Server.start_signal.is_set():
-                pass
+            if not Server.start_signal.is_set():
+                tr.brake()
+                continue
 
             tr.tr(move)
             sleep(0.01)
@@ -52,6 +54,12 @@ def sent_info():
                 info = move_num
                 send(info, 0.005)
             sleep(0.3)
+            if stop_signal.is_set():
+                send('b',0.005)
+                stop_signal.clear()
+            if Server.start_signal.is_set():
+                send('s', 0.005)
+                Server.start_signal.clear()
             if Server.over_signal.is_set():
                 exit()
 

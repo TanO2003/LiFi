@@ -31,8 +31,11 @@ def receive(client, delay):
 
         if msg == 'start':
             start_signal.set()
-            return msg
+            return 'g'
         
+        if msg == 'stop':
+            start_signal.clear()
+            return 'stop'
         
         if msg == "over":
             client.close()
