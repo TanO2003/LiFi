@@ -35,8 +35,8 @@ def receive(client, delay):
         
         if msg == 'stop':
             start_signal.clear()
-            return 'stop'
-        
+            return msg
+
         if msg == "over":
             client.close()
             over_signal.set()

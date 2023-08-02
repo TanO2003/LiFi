@@ -34,7 +34,7 @@ def send(mySocket, text, delay):
         exit()
 
 global _mode
-_mode = ""
+_mode = "stop"
 
 def on_button_click(mode):
     global _mode

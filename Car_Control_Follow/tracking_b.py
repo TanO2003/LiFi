@@ -62,22 +62,18 @@ def brake():
 	GPIO.output(IN3,GPIO.LOW)
 	GPIO.output(IN4,GPIO.LOW)
 
-def track():
-	TSLV1 = GPIO.input(TSLP1)
-	TSLV2 = GPIO.input(TSLP2)
-	TSRV1 = GPIO.input(TSRP1)
-	TSRV2 = GPIO.input(TSRP2)
-	
+def track(TSLV1,TSLV2,TSRV1,TSRV2):
+
 	if TSLV1==0 and TSLV2==1 and TSRV1==1 and TSRV2==1:
-		run(1,16)
+		run(1,18)
 	elif TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==1:
-		run(4,4)
+		run(12,12)
 	elif TSLV1==1 and TSLV2==0 and TSRV1==1 and TSRV2==1:
-		run(1,16)
+		run(1,18)
 	elif TSLV1==1 and TSLV2==1 and TSRV1==0 and TSRV2==1:
-		run(16,1)
+		run(18,1)
 	elif TSLV1==1 and TSLV2==1 and TSRV1==1 and TSRV2==0:
-		run(16,1)
+		run(18,1)
 	
 	#time.sleep(0.01)
 ''' 
@@ -86,13 +82,16 @@ def track():
 		back(0,20)
 '''
 def tri(order):
-	print('tri:',mode)
 	if order == 'r':
-		run(16,1)
+		run(20,1)
+		time.sleep(0.5)
 	elif order == 'l':
-		run(1,16)
+		run(1,20)
+		time.sleep(0.5)
+	
 	elif order == 'g':
-		run(6,6)
+		run(10,10)
+		return
 	while True:
 		#time.sleep(0.2)
 		TSLV1_tri = GPIO.input(TSLP1)
@@ -121,24 +120,27 @@ def dou(order):
 			return
 			
 
-def detect()->str:
+
+
+	
+def tr(mode):
+	order= mode
+	
 	TSLV1 = GPIO.input(TSLP1)
 	TSLV2 = GPIO.input(TSLP2)
 	TSRV1 = GPIO.input(TSRP1)
 	TSRV2 = GPIO.input(TSRP2)
+	#print(TSLV1,TSLV2,TSRV1,TSRV2)
 	if not ((TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0)or(TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1)):
-		return 'track'
-	elif TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0:
-		return 'tri'
-	elif (TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0) or (TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1):
-		return 'dou'
-	else:
-		return 'stop'
-
-
-	
-	
-	
+		track(TSLV1,TSLV2,TSRV1,TSRV2)
+	elif (TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==0) or (TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0) or (TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1):
+		tri(order)
+	'''
+	elif TSLV1==1 and TSLV2==0 and TSRV1==0 and TSRV2==0:
+		dou(order)
+	elif TSLV1==0 and TSLV2==0 and TSRV1==0 and TSRV2==1:
+		dou(order)
+	'''
 	
 	
 if __name__ == '__main__':
@@ -150,14 +152,4 @@ if __name__ == '__main__':
 		GPIO.cleanup()
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 

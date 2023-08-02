@@ -34,7 +34,7 @@ def bin_2_str(bin)->str:
 def receiver_init():
 
     GPIO.setmode(GPIO.BCM)
-
+    
     GPIO.setup(6, GPIO.IN)
 
 def receive(delay)->str:
@@ -43,13 +43,16 @@ def receive(delay)->str:
     time_in = time()
     while 1:
         a += str(GPIO.input(6))
-        if '0' in a:
-            time_in = time()
-        sleep(delay)
-        if a[-10:] == "1010101011":
-            break
-        now = time()
-        if now - time_in >= 1:
-            break
-    return bin_2_str(a)
 
+        sleep(delay)
+
+        if a[-10:] == "1010101011":
+
+            return bin_2_str(a)
+        now = time()
+
+        if now - time_in > 5:
+            
+            return 'timeout'
+        
+    return 'timeout'
