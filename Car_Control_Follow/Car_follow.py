@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 from time import sleep,time
 from Receiver import receive, receiver_init
 import tracking_b as tr
-
+import ultrasonic as us
 from threading import Thread, Event
 
 
@@ -21,7 +21,7 @@ def receive_main():
             global mode
             _mode = receive(0.005)
             print(_mode)
-            if _mode == 'r' or _mode == 'g' or _mode == 'l':
+            if _mode == 'r' or _mode == 'g' or _mode == 'l' or _mode== 'q' or _mode == 'e':
                 mode = _mode
             else:
                 pass
@@ -37,20 +37,23 @@ def tr_main():
             global mode
 
             tr.tr(mode)
-            sleep(0.1)
+            
+            sleep(0.05)
     except KeyboardInterrupt:
         GPIO.cleanup()
         exit()
 
 
+
+
 if __name__ == '__main__':
     tr.init()
     receiver_init()
+    us.init()
     t1 = Thread(target=receive_main)
     t2 = Thread(target=tr_main)
     t1.start()
     t2.start()
-
     while True:
         a=input()
         if a=='exit':

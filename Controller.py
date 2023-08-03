@@ -64,6 +64,8 @@ def button():
         create_button(root, "左转", "l")
         create_button(root, "右转", "r")
         create_button(root, "停止", "stop")
+        create_button(root, "左变道", "q")
+        create_button(root, "右变道", "e")
         root.protocol("WM_DELETE_WINDOW", on_closing)
         root.mainloop()
         root.destroy()
@@ -73,8 +75,8 @@ def button():
         exit()
 
 def send_main():
-    ip = '192.168.137.15'
-    port = 2222
+    ip = '192.168.137.12'
+    port = 6666
 
 
     # 发送数据

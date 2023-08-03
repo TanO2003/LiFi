@@ -8,10 +8,12 @@ import tracking as tr
 R = 22
 G = 27
 B = 24
+Signal = 2
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(R, GPIO.OUT)
 GPIO.setup(G, GPIO.OUT)
 GPIO.setup(B, GPIO.OUT)
+GPIO.setup(Signal, GPIO.OUT,initial=GPIO.HIGH)
 
 move_num = 'init'
 
@@ -27,17 +29,19 @@ def car_control(ip, port, delay):
             move_num = move
             if move == 'stop':
                 tr.brake()
+                GPIO.output(Signal,1)
                 continue
             if not Server.start_signal.is_set():
-                tr.brake
+                tr.brake()
+                GPIO.output(Signal,1)
                 continue
 
-            
+            GPIO.output(Signal,0)
             tr.tr(move)
             sleep(0.01)
             
 
-    except Exception:
+    except KeyboardInterrupt:
         Server.over_signal.set()
         exit()
 
@@ -49,7 +53,7 @@ def sent_info():
         sender_init()
         global move_num
         while 1:
-            if move_num == 'g' or move_num == 'l' or move_num == 'r':
+            if move_num == 'g' or move_num == 'l' or move_num == 'r' or move_num == 'q' or move_num == 'e':
                 info = move_num
                 send(info, 0.005)
             sleep(0.5)
@@ -60,8 +64,8 @@ def sent_info():
         exit()
 
 if __name__ == '__main__':
-    ip = '192.168.137.15'
-    port = 2222
+    ip = '192.168.137.12'
+    port = 6666
     delay = 0.001
     t1 = Thread(target = car_control, args=(ip, port, delay))
     t2 = Thread(target = sent_info)
