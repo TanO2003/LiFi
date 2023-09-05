@@ -99,7 +99,8 @@ def send_main():
 if __name__ == '__main__':
     t1 = Thread(target=send_main)
     t2 = Thread(target=button)
-
+    t1.daemon = True
+    t2.daemon = True
     t2.start()
     t1.start()
     t1.join()
